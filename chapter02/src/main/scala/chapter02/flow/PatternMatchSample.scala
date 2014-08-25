@@ -61,7 +61,7 @@ object PatternMatchSample extends App {
 
   def nestedCaseClassMatchSample(book: Book) {
     book match {
-      case Book(name, price, author, Publisher("翔泳社", _, _)) => {
+      case Book(name, price, author, publisher @ Publisher("翔泳社", _, _)) => {
         println(""" hogehoge """)
       }
       case _ => {}
@@ -175,14 +175,85 @@ object PatternMatchSample extends App {
 
   println("-- XMLに対するパターンマッチのサンプル --")
 
-//  import scala.xml.Elem
-//  def xmlMatchSample(e: Elem) {
-//    e match {
-//      case <book>{child}</book> => {
-//        println(child.text)
-//      }
-//    }
-//  }
+  import scala.xml.{Elem, Node}
+  def xmlMatchSample(e: Elem) {
+    e match {
+      case <book>{child}</book> => {
+        println(child.text)
+      }
+      case <book>{children @ _*}</book> => {
+        children.foreach { child: Node =>
+          println(child)
+        }
+      }
+      case _ => println("マッチしませんでした")
+    }
+  }
 
+  xmlMatchSample(<book><title>Scala逆引きレシピ</title></book>)
+  xmlMatchSample(<book><title>Scalagy首記レシピ</title><publisher>翔泳社</publisher></book>)
+
+  def xmlMatchSample2(e: Elem): Option[String] =
+    e match {
+      case <book><title>{ value }</title></book> => Some(value.text)
+      case _ => None
+    }
+
+  println(xmlMatchSample2(<book><title>Scala逆引きレシピ</title></book>))
+  println(xmlMatchSample2(<book><title>Scala逆引きレシピ</title><publisher>翔泳社</publisher></book>))
+  println(xmlMatchSample2(<book>
+                            <title>Scala逆引きレシピ</title>
+                          </book>))
+
+  def xmlMatchSample3(e: Elem): Option[String] =
+    e match {
+      case <book>{ children @ _* }</book> => {
+        for (child @ <title>{ _* }</title> <- children) yield child.text
+      }.headOption
+      case _ => None
+    }
+
+  println(xmlMatchSample3(<book>
+                            <title>Scala逆引きレシピ</title>
+                          </book>))
+
+  println("-- パターンガードのサンプル --")
+
+  def patternGuardSample(tuple: (Any, Any)) =
+    tuple match {
+      case (x, y) if x == y => {
+        println("same!")
+      }
+      case _ => {
+        println("not same!")
+      }
+    }
+
+  patternGuardSample((1, 2))
+  patternGuardSample((1, 1))
+
+  println("-- 関数の引数に対するパターンマッチのサンプル --")
+
+  def functionArqumentMatch: Unit = {
+    val func1: String => Unit = {
+      _ match {
+        case "Scala" => println("Scala")
+        case _ => println("Scala以外")
+      }
+    }
+
+    func1("Scala")
+    func1("Java")
+
+    val func2: String => Unit = {
+      case "Scala" => println("Scala")
+      case _ => println("Scala以外")
+    }
+
+    func2("Scala")
+    func2("Java")
+  }
+
+  functionArqumentMatch
 
 }
