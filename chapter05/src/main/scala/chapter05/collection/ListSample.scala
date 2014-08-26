@@ -236,5 +236,140 @@ object ListSample extends App {
     println(str4)
   }
   mkString()
-  
+
+  def slice() = {
+    println("-- List の一部を切り出した List を生成したい --")
+
+    val list = List(1, 2, 3, 4)
+
+    val tail = list.tail
+    println(tail)
+
+    val init = list.init
+    println(init)
+
+    val slice = list.slice(1, 3)
+    println(slice)
+
+    val take = list.take(2)
+    println(take)
+
+    val drop = list.drop(2)
+    println(drop)
+
+    val takeWhile = list.takeWhile { _ <= 2 }
+    println(takeWhile)
+
+    val dropWhile = list.dropWhile { _ <= 2 }
+    println(dropWhile)
+  }
+  slice()
+
+  def split() = {
+    println("-- List を分割したい --")
+
+    val list = List(1, 2, 3, 4, 1)
+
+    val (split1, split2) = list.splitAt(2)
+    println(split1)
+    println(split2)
+
+    val (span1, span2) = list.span( _ <= 2 )
+    println(span1)
+    println(span2)
+
+    val (partition1, partition2) = list.partition( _ <= 2 )
+    println(partition1)
+    println(partition2)
+
+    val groupBy: Map[Int, List[Int]] = list.groupBy( _ % 2 )
+    println(groupBy)
+  }
+  split()
+
+  def check() = {
+    println("-- List の要素が条件を満たすか調べたい --")
+
+    val list = List("Java", "Scala", "Clojure")
+
+    val contains = list.contains("Scala")
+    println(contains)
+
+    val exists = list.exists( _.startsWith("J") )
+    println(exists)
+
+    val forall = list.forall( _.length >= 4 )
+    println(forall)
+  }
+  check()
+
+  def flat() = {
+    println("-- flatten / flatMap のサンプル --")
+
+    {
+      val list = List(List(1, 2), List(3, 4))
+
+      val result = list.flatten
+      println(result)
+    }
+
+    {
+      val list = List(Some(1), Some(2), None)
+
+      val result = list.flatten
+      println(result)
+    }
+
+    {
+      val list = List(1, 2, 3)
+
+      val result1 = list.flatMap( e => List(e, e * 2) )
+      println(result1)
+
+      val result2 = list.map( e => List(e, e * 2) ).flatten
+      println(result2)
+    }
+  }
+  flat()
+
+  def reduce() = {
+    println("-- reduce / fold のサンプル --")
+
+    val list = List(1, 2, 3, 4, 5)
+
+    val result1 = list.reduceLeft( (a, b) => a + b )
+    println(result1)
+
+    val result2 = list.reduceRight( (a, b) => a + b )
+    println(result2)
+
+    val result3 = list.foldLeft(0){ (a, b) => a + b }
+    println(result3)
+
+    val result4 = list.foldRight(0)( (a, b) => a + b )
+    println(result4)
+
+    val result5 = (0 /: list) { _ + _ }
+    println(result5)
+
+    val result6 = (list :\ 0) { _ + _ }
+    println(result6)
+  }
+  reduce()
+
+  def zip() = {
+    println("-- zip / unzip のサンプル --")
+
+    val list1 = List(1, 2)
+    val list2 = List("A", "B")
+
+    val list3 = list1.zip(list2)
+    println(list3)
+
+    val (list4, list5) = list3.unzip
+    println(list4)
+    println(list5)
+  }
+
+  zip()
 }
